@@ -1,7 +1,7 @@
 /**
  * In this challenge, you have to regroup messages into an array of day based on their
  * sentAt property.
- * You have to manipulate dates in vanillaJS. Be carefull to call, if needed, setUTCHours, setUTCMinutes, ... 
+ * You have to manipulate dates in vanillaJS. Be carefull to call, if needed, setUTCHours, setUTCMinutes, ...
  * instead of setHouts, setMinutes, ... to avoid timezone offsets!
  *
  * Example:
@@ -21,17 +21,22 @@
  *          ]
  *      },
  * ]
- * 
+ *
  * @param messages List of messages, unsorted and not grouped in days
  * @returns Sorted list of days (only days with messages!) with a list of sorted messages of the day
  */
 
 // ↓ uncomment bellow lines and add your response!
-/*
-export default function ({ messages }: { messages: Message[] }): DayMessages[] {
-    return [];
-}
-*/
+export default ({ messages }: { messages: Message[] }): DayMessages[] =>
+  Object.entries(
+    messages.reduce((grouped, message) => {
+        const date = new Date(message.sentAt)
+        date.setUTCHours(0, 0, 0, 0)
+        const day = date.toISOString()
+        grouped[day] = [...(grouped[day] || []), message].sort((a, b) => a.sentAt.localeCompare(b.sentAt))
+        return grouped
+    }, {} as { [key: string]: Message[] })
+  ).map(([day, messages]) => ({ day, messages })).sort((a, b) => a.day.localeCompare(b.day))
 
 // used interfaces, do not touch
 export interface Message {
